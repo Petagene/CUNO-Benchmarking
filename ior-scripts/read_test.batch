@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --job-name=read
+#SBATCH --ntasks=2560
+#SBATCH --ntasks-per-node=10
+#SBATCH --output=read_output/%x_%j.out
+#SBATCH --verbose
+#SBATCH --exclusive
+
+AWS_ACCESS_KEY=.
+AWS_KEY_ID=.
+S3_PATH=bucket/directory
+
+export MPIRUN_OPTIONS="--map-by socket:PE=0 --report-bindings"
+mpirun $MPIRUN_OPTIONS -x LD_PRELOAD=/shared/cuno.so -x AWS_SECRET_ACCESS_KEY=$AWS_ACCESS_KEY -x AWS_ACCESS_KEY_ID=$AWS_KEY_ID -x /shared/ior/bin/ior -vvv -a POSIX -r -k -F -b=16G -t=1m -i 5 -o /cuno/s3/$S3_PATH
