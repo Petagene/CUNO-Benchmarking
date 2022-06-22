@@ -23,6 +23,7 @@ create_source_directories() {
 
 clear_cache() {
     sudo sync; sudo sh -c "/usr/bin/echo 3 > /proc/sys/vm/drop_caches"
+    rm -rf /dev/shm/cuno*
 }
 
 setup_source_files() {
