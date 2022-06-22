@@ -13,7 +13,6 @@ cleanup() {
 }
 create_source_directories() {
     mkdir -p $LOCAL_DIRECTORY/src
-    mkdir -p $LOCAL_DIRECTORY/dst
 }
 
 clear_cache() {

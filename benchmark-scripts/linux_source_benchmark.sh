@@ -2,6 +2,7 @@
 
 BUCKET=test_bucket
 REMOTE_DIRECTORY=test_directory
+REMOTE_PREFIX=s3://
 LOCAL_DIRECTORY=local_test
 TEST_OUTPUT=test_results.txt
 REPEATS=2
@@ -15,15 +16,15 @@ fetch_linux_source() {
 cleanup() {
     rm -rf "$LOCAL_DIRECTORY/src"
     rm -rf "$LOCAL_DIRECTORY/dst"
-    rm -rf "s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst"
-    rm -rf "s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src"
+    rm -rf "$REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst"
+    rm -rf "$REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src"
 }
 
 create_source_directories() {
     mkdir $LOCAL_DIRECTORY/src
     mkdir $LOCAL_DIRECTORY/dst
-    mkdir s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst
-    mkdir s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src
+    mkdir $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst
+    mkdir $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src
 }
 
 clear_dest_remote() {
@@ -45,17 +46,17 @@ setup_source_files() {
     echo "    -- Preparing local" | tee -a $TEST_OUTPUT
     cp -L -r linux-5.17.2 $LOCAL_DIRECTORY/src/linux-5.17.2
     echo "    -- Uploading to cloud" | tee -a $TEST_OUTPUT
-    cp -r $LOCAL_DIRECTORY/src/linux-5.17.2 s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src/.
+    cp -r $LOCAL_DIRECTORY/src/linux-5.17.2 $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src/.
     rm -rf linux-5.17.2.tar.xz
     rm -rf linux-5.17.2
 }
 
 copy_large_local_remote() {
-    cp -r $LOCAL_DIRECTORY/src s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
+    cp -r $LOCAL_DIRECTORY/src $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
 }
 
 copy_large_remote_local() {
-    cp -r s3://$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src $LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
+    cp -r $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src $LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
 }
 
 
