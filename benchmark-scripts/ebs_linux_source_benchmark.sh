@@ -1,8 +1,5 @@
 #!/bin/bash
-
-BUCKET=test_bucket
 REMOTE_DIRECTORY=test_directory
-REMOTE_PREFIX=s3://
 LOCAL_DIRECTORY=local_test
 TEST_OUTPUT=test_results.txt
 REPEATS=2
@@ -16,19 +13,27 @@ fetch_linux_source() {
 cleanup() {
     rm -rf "$LOCAL_DIRECTORY/src"
     rm -rf "$LOCAL_DIRECTORY/dst"
-    rm -rf "$REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst"
-    rm -rf "$REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src"
+    rm -rf "$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst"
+    rm -rf "$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src"
 }
 
 create_source_directories() {
     mkdir -p $LOCAL_DIRECTORY/src
     mkdir -p $LOCAL_DIRECTORY/dst
-    mkdir -p $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst
-    mkdir -p $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src
+    mkdir -p $REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst
+    mkdir -p $REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src
 }
 
 clear_dest_remote() {
-    rm -rf "$REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst" | tee -a $TEST_OUTPUT
+    rm -rf "$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst" | tee -a $TEST_OUTPUT
+}
+
+attempt_burst() {
+    for i in {0..1000}
+    do 
+        clear_cache
+        cat $REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src/linux-5.17.2/CREDITS > /dev/null
+    done
 }
 
 clear_dest_local() {
@@ -47,17 +52,17 @@ setup_source_files() {
     echo "    -- Preparing local" | tee -a $TEST_OUTPUT
     cp -L -r linux-5.17.2 $LOCAL_DIRECTORY/src/linux-5.17.2
     echo "    -- Uploading to cloud" | tee -a $TEST_OUTPUT
-    cp -r $LOCAL_DIRECTORY/src/linux-5.17.2 $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src/.
+    cp -r $LOCAL_DIRECTORY/src/linux-5.17.2 $REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src/.
     rm -rf linux-5.17.2.tar.xz
     rm -rf linux-5.17.2
 }
 
 copy_large_local_remote() {
-    cp -r $LOCAL_DIRECTORY/src $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
+    cp -r $LOCAL_DIRECTORY/src $REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
 }
 
 copy_large_remote_local() {
-    cp -r $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src $LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
+    cp -r $REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src $LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
 }
 
 
@@ -69,6 +74,9 @@ create_source_directories
 
 echo "-- Setup test files --" | tee -a $TEST_OUTPUT
 setup_source_files
+
+echo "-- Exhaust burst --" | tee -a $TEST_OUTPUT
+attempt_burst
 
 echo "-- Run Cloud Tests --" | tee -a $TEST_OUTPUT
 echo "--------------------------SMALL FILES (74999) (READ) -------------------------------" | tee -a $TEST_OUTPUT

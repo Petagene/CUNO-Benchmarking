@@ -31,6 +31,8 @@ Once CUNO is installed and the ramdisk is created and all script variables are c
 `scripts/large_file_benchmark.sh` will benchmark the copying of multiple large files (recommended 16GiB per file).
 `scripts/linux_source_benchmark.sh` will benchmark the copying of a large amount of small files (74999 files of the linux source code).
 `scripts/ebs_large_file_benchmark.sh` will benchmark the copying of multiple large files using an EBS mount.
+`scripts/ebs_linux_source_benchmark.sh` will benchmark the copying of a large amount of small files (74999 files of the linux source code) to an EBS mount.
 `scripts/ls_benchmark.sh` will benchmark the ls time for 10000 files.
+-- The ls script can be modified (removal of the S3_PREFIX) to allow listing tests locally.
 `scripts/run_all.sh` will run all the above cases.
 
