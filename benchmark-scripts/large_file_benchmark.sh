@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BUCKET=test_bucket
 REMOTE_DIRECTORY=test_directory
 REMOTE_PREFIX=s3://
@@ -65,9 +67,6 @@ echo "-- Run Cloud Tests --" | tee -a $TEST_OUTPUT
 echo "---------------------------LARGE FILES LOCAL TO REMOTE (WRITE) --------------------------------" | tee -a $TEST_OUTPUT
 i=0
 sum=0
-duration_sum=0
-max=0
-min=1000
 while [[ "${i}" -lt "${REPEATS}" ]]; do
     clear_dest_remote
     clear_cache
@@ -80,13 +79,6 @@ while [[ "${i}" -lt "${REPEATS}" ]]; do
     echo "RUN[${i}] - Time Taken (s): $duration | Speed (Gbps): $speed_gbps | Speed (GiB/s): $speed_gbips"  | tee -a $TEST_OUTPUT
     i=$((i + 1))
     sum=$(echo "scale=5;${sum}+${speed_gbps}" | bc -l | awk '{printf("%.5f",$1)}')
-    if [[ $(echo "$speed_gbps > $max" |bc -l)  ]]; then
-        max=$speed_gbps
-    fi
-
-    if [ $(echo "$speed_gbps < $min" |bc -l) ]; then
-        min=$speed_gbps
-    fi
     done
 average_speed=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')
 #average_speed=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')
@@ -99,9 +91,6 @@ rm -rf "$LOCAL_DIRECTORY/src"
 echo "--------------------------LARGE FILES REMOTE TO LOCAL (READ) -------------------------------" | tee -a $TEST_OUTPUT
 i=0
 sum=0
-duration_sum=0
-max=0
-min=1000
 while [[ "${i}" -lt "${REPEATS}" ]]; do
     clear_dest_local
     clear_cache
@@ -114,13 +103,6 @@ while [[ "${i}" -lt "${REPEATS}" ]]; do
     echo "RUN[${i}] - Time Taken (s): $duration | Speed (Gbps): $speed_gbps | Speed (GiB/s): $speed_gbips"  | tee -a $TEST_OUTPUT
     i=$((i + 1))
     sum=$(echo "scale=5;${sum}+${speed_gbps}" | bc -l | awk '{printf("%.5f",$1)}')
-    if [[ $(echo "$speed_gbps > $max" | bc -l)  ]]; then
-        max=$speed_gbps
-    fi
-
-    if [ $(echo "$speed_gbps < $min" | bc -l) ]; then
-        min=$speed_gbps
-    fi
     done
 average_speed=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')
 echo "Results - Average (Gbps): $average_speed" | tee -a $TEST_OUTPUT

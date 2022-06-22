@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BUCKET=test_bucket
 REMOTE_DIRECTORY=test_directory
 LOCAL_DIRECTORY=local_test
@@ -25,7 +27,7 @@ create_source_directories() {
 }
 
 clear_dest_remote() {
-    rm -rf $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst | tee -a $TEST_OUTPUT
+    rm -rf "$REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/dst" | tee -a $TEST_OUTPUT
 }
 
 clear_dest_local() {
@@ -70,9 +72,6 @@ echo "-- Run Cloud Tests --" | tee -a $TEST_OUTPUT
 echo "--------------------------SMALL FILES (74999) (READ) -------------------------------" | tee -a $TEST_OUTPUT
 i=0
 sum=0
-duration_sum=0
-max=0
-min=1000
 while [[ "${i}" -lt "${REPEATS}" ]]; do
     clear_dest_local
     clear_cache
@@ -85,13 +84,6 @@ while [[ "${i}" -lt "${REPEATS}" ]]; do
     echo "RUN[${i}] - Time Taken (s): $duration | Speed (Gbps): $speed_gbps | Speed (GiB/s): $speed_gbips"  | tee -a $TEST_OUTPUT
     i=$((i + 1))
     sum=$(echo "scale=5;${sum}+${speed_gbps}" | bc -l | awk '{printf("%.5f",$1)}')
-    if [[ $(echo "$speed_gbps > $max" | bc -l)  ]]; then
-        max=$speed_gbps
-    fi
-
-    if [ $(echo "$speed_gbps < $min" | bc -l) ]; then
-        min=$speed_gbps
-    fi
     done
 average_speed=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')
 echo "Results - Average (Gbps): $average_speed"  | tee -a $TEST_OUTPUT
@@ -100,9 +92,6 @@ echo "--------------------------------------------------------------------------
 echo "---------------------------SMALL FILES (74999) (WRITE) --------------------------------" | tee -a $TEST_OUTPUT
 i=0
 sum=0
-duration_sum=0
-max=0
-min=1000
 while [[ "${i}" -lt "${REPEATS}" ]]; do
     clear_dest_remote
     clear_cache
@@ -115,13 +104,6 @@ while [[ "${i}" -lt "${REPEATS}" ]]; do
     echo "RUN[${i}] - Time Taken (s): $duration | Speed (Gbps): $speed_gbps | Speed (GiB/s): $speed_gbips"  | tee -a $TEST_OUTPUT
     i=$((i + 1))
     sum=$(echo "scale=5;${sum}+${speed_gbps}" | bc -l | awk '{printf("%.5f",$1)}')
-    if [[ $(echo "$speed_gbps > $max" |bc -l)  ]]; then
-        max=$speed_gbps
-    fi
-    echo "min: $min $speed_gbps"
-    if [ $(echo "$speed_gbps < $min" |bc -l) ]; then
-        min=$speed_gbps
-    fi
     done
 
 average_speed=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')

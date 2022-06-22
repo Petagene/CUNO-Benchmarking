@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BUCKET=test_bucket
 REMOTE_DIRECTORY=test_directory
 REMOTE_PREFIX=s3://
@@ -23,8 +25,7 @@ setup_source_files() {
     for i in {0..10000}
     do
         random_string=$(cat /proc/sys/kernel/random/uuid | sed 's/[-]//g' | head -c 20; echo;)
-        dd if=/dev/zero of=$LOCAL_DIRECTORY/src/$random_string count=1024 bs=1
-        echo $random_string
+        dd if=/dev/zero of="$LOCAL_DIRECTORY/src/$random_string" count=1024 bs=1
     done
     echo "    -- Uploading to cloud" | tee -a $TEST_OUTPUT
     cp -r $LOCAL_DIRECTORY/src $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src
@@ -48,9 +49,6 @@ echo "-- Run Cloud Tests --" | tee -a $TEST_OUTPUT
 echo "---------------------------LARGE FILES LOCAL TO REMOTE--------------------------------" | tee -a $TEST_OUTPUT
 i=0
 sum=0
-duration_sum=0
-max=0
-min=1000
 while [[ "${i}" -lt "${REPEATS}" ]]; do
     clear_cache
     start=$(date +%s.%N)
@@ -62,6 +60,5 @@ while [[ "${i}" -lt "${REPEATS}" ]]; do
     sum=$(echo "scale=5;${sum}+${duration}" | bc -l | awk '{printf("%.5f",$1)}')
 done
 average_time=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')
-#average_speed=$(echo "scale=5;${sum}/${REPEATS}" | bc -l | awk '{printf("%.5f",$1)}')
-echo "Results - Average (Gbps): $average_speed"  | tee -a $TEST_OUTPUT
+echo "Results - Average (Gbps): $average_time"  | tee -a $TEST_OUTPUT
 echo "------------------------------------------------------------------------------------" | tee -a $TEST_OUTPUT
