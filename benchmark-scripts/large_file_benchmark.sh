@@ -26,9 +26,8 @@ clear_cache() {
 }
 
 setup_source_files() {
-    #dd if=/dev/zero of=$LOCAL_DIRECTORY/src/gen_file count=1048576 bs=$((1024*$TEST_FILE_SIZE_GiB))
     echo "    -- Preparing local" | tee -a $TEST_OUTPUT
-    dd if=/dev/zero of=$LOCAL_DIRECTORY/src/gen_file count=1048576 bs=$((1024*$TEST_FILE_SIZE_GiB))
+    dd if=/dev/urandom of=$LOCAL_DIRECTORY/src/gen_file count=1048576 bs=$((1024*$TEST_FILE_SIZE_GiB))
     mv $LOCAL_DIRECTORY/src/gen_file $LOCAL_DIRECTORY/src/test_file1
     cp $LOCAL_DIRECTORY/src/test_file1 $LOCAL_DIRECTORY/src/test_file2
     cp $LOCAL_DIRECTORY/src/test_file1 $LOCAL_DIRECTORY/src/test_file3

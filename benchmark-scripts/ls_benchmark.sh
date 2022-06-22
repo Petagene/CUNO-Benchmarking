@@ -25,7 +25,7 @@ setup_source_files() {
     for i in {0..10000}
     do
         random_string=$(cat /proc/sys/kernel/random/uuid | sed 's/[-]//g' | head -c 20; echo;)
-        dd if=/dev/zero of="$LOCAL_DIRECTORY/src/$random_string" count=1024 bs=1
+        dd if=/dev/urandom of="$LOCAL_DIRECTORY/src/$random_string" count=1024 bs=1
     done
     echo "    -- Uploading to cloud" | tee -a $TEST_OUTPUT
     cp -r $LOCAL_DIRECTORY/src $REMOTE_PREFIX$BUCKET/$REMOTE_DIRECTORY/$LOCAL_DIRECTORY/src
