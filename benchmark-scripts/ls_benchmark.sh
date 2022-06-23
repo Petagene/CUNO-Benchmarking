@@ -16,8 +16,11 @@ create_source_directories() {
 }
 
 clear_cache() {
-    sudo sync; sudo sh -c "/usr/bin/echo 3 > /proc/sys/vm/drop_caches"
-    rm -rf /dev/shm/cuno*
+    if [[ "$REMOTE_PREFIX" == "s3://" ]]; then
+        rm -rf /dev/shm/cuno*
+    else
+        sudo sync; sudo sh -c "/usr/bin/echo 3 > /proc/sys/vm/drop_caches"
+    fi
 }
 
 setup_source_files() {
