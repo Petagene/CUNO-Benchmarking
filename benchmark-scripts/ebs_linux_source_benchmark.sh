@@ -1,6 +1,6 @@
 #!/bin/bash
 REMOTE_DIRECTORY=test_directory
-LOCAL_DIRECTORY=local_test
+LOCAL_DIRECTORY=benchmark
 TEST_OUTPUT=test_results.txt
 REPEATS=2
 

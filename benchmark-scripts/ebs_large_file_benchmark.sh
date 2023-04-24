@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REMOTE_DIRECTORY=ebs_folder
-LOCAL_DIRECTORY=local_test
+LOCAL_DIRECTORY=benchmark
 TEST_OUTPUT=test_results.txt
 REPEATS=2
 TEST_FILE_SIZE_GiB=16
