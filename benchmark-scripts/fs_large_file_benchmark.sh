@@ -69,15 +69,6 @@ setup_source_files() {
     cp -r $FF_LOCAL_DIRECTORY/src/* $FF_REMOTE_DIRECTORY/src/ || die "Faield to upload files to '$FF_REMOTE_DIRECTORY/src'."
 }
 
-attempt_burst() {
-    clear_cache
-    for i in {0..10}
-    do 
-        cat $FF_REMOTE_DIRECTORY/src/test_file1 >/dev/null 2>/dev/null || break
-    done
-    clear_cache
-}
-
 clear_dest_remote() {
     rm -rf $FF_REMOTE_DIRECTORY/dst | tee -a $FF_TEST_OUTPUT || die "Faield to delete remote '$FF_REMOTE_DIRECTORY/dst'."
 }
@@ -105,10 +96,7 @@ create_source_directories
 warn "-- Setup test files --"
 setup_source_files
 
-warn "-- Exhaust burst --"
-attempt_burst
-
-warn "-- Run EBS Tests --"
+warn "-- Run FS Tests --"
 warn "---------------------------LARGE FILES (WRITE) --------------------------------"
 i=0
 sum=0
