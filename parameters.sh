@@ -1,40 +1,53 @@
 #!/bin/bash
 
-# Parameters for benchmark_scripts/large_file_benchmark.sh #
-FB_BUCKET=                       #required
-FB_REMOTE_DIRECTORY=test_directory
-FB_REMOTE_PREFIX=s3://
-FB_LOCAL_DIRECTORY=benchmark
-FB_TEST_OUTPUT=test_results.txt
-FB_REPEATS=2
-FB_TEST_FILE_SIZE_GiB=16
-FB_NB_TEST_FILES=5
+# Parameters for benchmark_scripts/run_cuno_large_file_benchmark.sh #
+CUNO_LF_REMOTE_PREFIX=s3://
+CUNO_LF_BUCKET=                       #required
+CUNO_LF_REMOTE_DIRECTORY=benchmark
+CUNO_LF_LOCAL_DIRECTORY=benchmark
+CUNO_LF_TEST_OUTPUT=test_results.txt
+CUNO_LF_REPEATS=3
+CUNO_LF_TEST_FILE_SIZE_GiB=32
+CUNO_LF_NUM_TEST_FILES=5
+# Time to sleep for between writes and between reads, to allow server-side caches to expire and to avoid hotspots of external traffic. 
+CUNO_LF_SLEEP_TIME_SECONDS=300
+# Number of initial write runs to discard before running benchmarks. We notice that the first run when an EC2 instance is booted up is significantly slower and not representative of real-world speeds. Without theorising why, we suggest throwing away at least 1 run when benchmarking.
+CUNO_LF_WARM_UP_REPEATS=1
+
+# Parameters for benchmark-scripts/run_filesystem_large_file_benchmark.sh #
+FILESYSTEM_LF_REMOTE_DIRECTORY=             #required
+FILESYSTEM_LF_LOCAL_DIRECTORY=benchmark
+FILESYSTEM_LF_TEST_OUTPUT=test_results.txt
+FILESYSTEM_LF_REPEATS=3
+FILESYSTEM_LF_TEST_FILE_SIZE_GiB=32
+FILESYSTEM_LF_NUM_TEST_FILES=5
+# Time to sleep for between writes and between reads, to allow server-side caches to expire and to avoid hotspots of external traffic.
+FILESYSTEM_LF_SLEEP_TIME_SECONDS=300
+# Number of initial write runs to discard before running benchmarks. We notice that the first run when an EC2 instance is booted up is significantly slower and not representative of real-world speeds. Without theorising why, we suggest throwing away at least 1 run when benchmarking.
+FILESYSTEM_LF_WARM_UP_REPEATS=1
+
+# Parameters for benchmark_scripts/run_cuno_small_file_benchmark.sh #
+CUNO_SF_REMOTE_PREFIX=s3://
+CUNO_SF_BUCKET=                       #required
+CUNO_SF_REMOTE_DIRECTORY=benchmark
+CUNO_SF_LOCAL_DIRECTORY=benchmark
+CUNO_SF_TEST_OUTPUT=test_results.txt
+CUNO_SF_REPEATS=3
+# Time to sleep for between writes and between reads, to allow server-side caches to expire and to avoid hotspots of external traffic.
+CUNO_SF_SLEEP_TIME_SECONDS=300
+# Number of initial write runs to discard before running benchmarks. We notice that the first run when an EC2 instance is booted up is significantly slower and not representative of real-world speeds. Without theorising why, we suggest throwing away at least 1 run when benchmarking.
+CUNO_SF_WARM_UP_REPEATS=0
 
 
-# Parameters for benchmark_scripts/linux_source_benchmark.sh #
-SB_BUCKET=                       #required
-SB_REMOTE_DIRECTORY=test_directory
-SB_REMOTE_PREFIX=s3://
-SB_LOCAL_DIRECTORY=benchmark
-SB_TEST_OUTPUT=test_results.txt
-SB_REPEATS=2
-
-
-# Parameters for benchmark-scripts/fs_large_file_benchmark.sh #
-FF_REMOTE_DIRECTORY=             #required
-FF_LOCAL_DIRECTORY=benchmark
-FF_TEST_OUTPUT=test_results.txt
-FF_REPEATS=2
-FF_TEST_FILE_SIZE_GiB=16
-FF_NB_TEST_FILES=5
-
-
-# Parameters for benchmark-scripts/fs_linux_source_benchmark.sh #
-FS_REMOTE_DIRECTORY=             #required
-FS_LOCAL_DIRECTORY=benchmark
-FS_TEST_OUTPUT=test_results.txt
-FS_REPEATS=2
-
+# Parameters for benchmark-scripts/run_filesystem_small_file_benchmark.sh #
+FILESYSTEM_SF_REMOTE_DIRECTORY=             #required
+FILESYSTEM_SF_LOCAL_DIRECTORY=benchmark
+FILESYSTEM_SF_TEST_OUTPUT=test_results.txt
+FILESYSTEM_SF_REPEATS=3
+# Time to sleep for between writes and between reads, to allow server-side caches to expire and to avoid hotspots of external traffic.
+FILESYSTEM_SF_SLEEP_TIME_SECONDS=300
+# Number of initial write runs to discard before running benchmarks. We notice that the first run when an EC2 instance is booted up is significantly slower and not representative of real-world speeds. Without theorising why, we suggest throwing away at least 1 run when benchmarking.
+FILESYSTEM_SF_WARM_UP_REPEATS=0
 
 # Parameters for benchmark-scripts/ls_benchmark.sh #
 LS_BUCKET=                       #required
