@@ -52,6 +52,16 @@ create_source_directories() {
     mkdir -p $FS_REMOTE_DIRECTORY/src || die "Failed to create new directory '$FS_REMOTE_DIRECTORY/src'. Make sure that your user '`whoami`' has sufficient permissions."
 }
 
+#For EBS, exhausts burst ops for fair comparison
+attempt_burst() {
+    clear_cache || break
+    for i in {0..200}
+    do 
+        cat $FS_REMOTE_DIRECTORY/src/linux-5.17.2/CREDITS >/dev/null 2>/dev/null || break
+    done
+    clear_cache || break
+}
+
 clear_dest_remote() {
     rm -rf "$FS_REMOTE_DIRECTORY/dst" | tee -a $FS_TEST_OUTPUT || die "Failed to delete remote directory '$FS_REMOTE_DIRECTORY/dst'. If this error persists, contact CUNO support."
 }
@@ -94,6 +104,9 @@ create_source_directories
 
 warn "-- Setup test files --"
 setup_source_files
+
+warn "-- Exhaust burst --"
+attempt_burst
 
 warn "-- Run Cloud Tests --"
 warn "--------------------------SMALL FILES (74999) (READ) -------------------------------"

@@ -64,8 +64,6 @@ cuno
 ```
 
 ## Other Storage Medium
-   
-This section is for setting up benchmarks for AWS EFS, EBS (formatted to ext4, xfs...), FSx Lustre and other filesystems.
 
 1. Clone this directory:
 ```bash
@@ -82,7 +80,7 @@ cd ramdisk
 mkdir -p benchmark
 ```
 4. Modify the test parameters in `parameters.sh` to point to the mount location of the filesystem you want to test (by modifying the `xx_REMOTE_DIRECTORY` variables):
-   * You can also optionally change the default values of other parameters if you wish to change the testing environment, e.g.:
+   * You can also optionally change the default values of other parameters if you wish to change the testing environment
 ```bash
 ###
 FF_REMOTE_DIRECTORY=/mnt/ebs_fs        #required
